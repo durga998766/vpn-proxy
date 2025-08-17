@@ -21,6 +21,15 @@ app.use(rateLimit({ windowMs: 60_000, max: 120 }));
 // Serve frontend
 app.use(express.static(path.join(__dirname, 'public')));
 
+// ✅ Root route
+app.get('/', (req, res) => {
+  res.send(`
+    <h2>🚀 Simple VPN Proxy is Running</h2>
+    <p>Use it like this: <code>/p/https://example.com</code></p>
+    <p>For example: <a href="/p/https://www.wikipedia.org">/p/https://www.wikipedia.org</a></p>
+  `);
+});
+
 // Helper: extract & validate target from /p/<encoded-url>
 function getTarget(req) {
   const encoded = req.params.url;
@@ -34,7 +43,7 @@ function getTarget(req) {
   } catch (e) { return null; }
 }
 
-// Proxy route — Express 4 syntax supports :url(*)
+// Proxy route
 app.use('/p/:url(*)', (req, res) => {
   const target = getTarget(req);
   if (!target) return res.status(400).send('Invalid target URL');
@@ -53,6 +62,6 @@ app.use('/p/:url(*)', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Simple VPN proxy running at http://localhost:${PORT}`);
-  console.log('Open http://localhost:' + PORT + ' in browser');
+  console.log(`✅ Simple VPN proxy running at http://localhost:${PORT}`);
+  console.log('➡️  Try opening http://localhost:' + PORT + '/p/https://www.wikipedia.org');
 });
